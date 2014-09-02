@@ -1,4 +1,3 @@
-#!/bin/usr/python
 from matplotlib.colors import LinearSegmentedColormap,ListedColormap
 from mpl_toolkits.basemap import Basemap
 import numpy as np
