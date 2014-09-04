@@ -164,14 +164,7 @@ def uv2sd(u,v):
     # Make fixing of negative directions np array compatible
     a=np.where(dir<0.0)
     dir[a]=dir[a]+360.0
-    
-   # if dir.shape > 1:
-   #   if dir < 0.0:
-   #     dir=dir+360.0
-   #   if dir > 360.0:
-   #     dir=dir-360.0      
-    
-    
+     
     return spd,dir    
     
 
@@ -182,6 +175,70 @@ def kts2ms(spd):
 def ms2kts(spd):
     #Convert wind in meters/second to knots
     return spd*1.94384449    
+
+
+'''
+
+AVIATION
+
+'''
+def get_artcc_name(city):
+# Return Air Route Traffic Control Center (ARTCC) abbreviations for input city
+  if city.upper()=='SEATTLE':
+    name='ZSE'
+  elif city.upper()=='OAKLAND':
+    name='ZOA'
+  elif city.upper()=='SALT_LAKE_CITY':
+    name='ZSC'
+  elif city.upper()=='LOS_ANGELES':
+    name='ZLA'
+  elif city.upper()=='DENVER':
+    name='ZDV'
+  elif city.upper()=='ALBUQUERQUE':
+    name='ZAB'
+  elif city.upper()=='HOUSTON':
+    name='ZHU'
+  elif city.upper()=='FORT_WORTH':
+    name='ZFW'
+  elif city.upper()=='KANSAS_CITY':
+    name='ZKC'
+  elif city.upper()=='MINNEAPOLIS':
+    name='ZMP'
+  elif city.upper()=='CHICAGO':
+    name='ZAU'
+  elif city.upper()=='INDIANAPOLIS':
+    name='ZID'
+  elif city.upper()=='MEMPHIS':
+    name='ZME'
+  elif city.upper()=='ATLANTA':
+    name='ZTL'
+  elif city.upper()=='JACKSONVILLE':
+    name='ZJX'
+  elif city.upper()=='MIAMI':
+    name='ZMA'
+  elif city.upper()=='WASHINGTON':
+    name='ZDC'
+  elif city.upper()=='CLEVELAND':
+    name='ZOB'
+  elif city.upper()=='NEW_YORK':
+    name='ZNY'
+  elif city.upper()=='BOSTON':
+    name='ZBW'
+  elif city.upper()=='ANCHORAGE':
+    name='ZAN'
+  else:
+    print 'Unable to locate ARTCC abbrev. name for ',city,' - using input value'
+    name=city.upper()
+
+  return name
+
+
+def top25airways():
+# Returns a list of the top25 aviation routes over the CONUS provided by AWC. 
+#  Generally used in conjunction with an airways shapefile.
+  return  ['J36','J95','J64','J60','J80','J6','J48','J75','J121',
+           'J174','J79','J53','J109','J211','J518','J220','J134',
+            'J149','J89','J99','J85','J78','J180','J87','J74','J166']
 
 '''
 COLOR SHADING / COLOR BARS
