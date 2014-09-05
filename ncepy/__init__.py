@@ -932,8 +932,8 @@ def corners_res(dom):
     elif dom=='MEDFORD':
       llcrnrlon=-124.0
       llcrnrlat=41.5
-      urcrnrlon=43.2
-      urcrnrlat=-122.0
+      urcrnrlon=-122.0
+      urcrnrlat=43.2
       res='h'
     else:
       #default to CONUS
