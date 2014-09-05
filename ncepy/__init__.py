@@ -2,7 +2,6 @@ from matplotlib.colors import LinearSegmentedColormap,ListedColormap
 from mpl_toolkits.basemap import Basemap
 import numpy as np
 import os; import sys
-import math
 from scipy.ndimage.filters import minimum_filter, maximum_filter
 import matplotlib.pyplot as plt
 from datetime import *; from dateutil.relativedelta import *
@@ -608,22 +607,15 @@ def clear_plotables(ax,keep_ax_lst,fig):
   ############################################################################   
 
 
-def gc_dist(lat_a,lon_a,lat_b,lon_b):
-# Return the great circle distance between a two pairs of lat/lon points
-
-
-  lat1=lat_a
-  lon1=lon_a
-  lat2=lat_b
-  lon2=lon_b
-
+def gc_dist(lat1,lon1,lat2,lon2):
+# Return the great circle distance (m) between a two pairs of lat/lon points
   EARTH_CIRCUMFERENCE = 6378137 # earth circumference in meters 
-  dLat = math.radians(lat2 - lat1)
-  dLon = math.radians(lon2 - lon1)
-  a = (math.sin(dLat / 2) * math.sin(dLat / 2) +
-  math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) *
-  math.sin(dLon / 2) * math.sin(dLon / 2))
-  c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+  dLat = np.radians(lat2 - lat1)
+  dLon = np.radians(lon2 - lon1)
+  a = (np.sin(dLat / 2) * np.sin(dLat / 2) +
+  np.cos(np.radians(lat1)) * np.cos(np.radians(lat2)) *
+  np.sin(dLon / 2) * np.sin(dLon / 2))
+  c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
   d = EARTH_CIRCUMFERENCE * c
   return d
 
