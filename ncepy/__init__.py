@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from datetime import *; from dateutil.relativedelta import *
 from dateutil.parser import *
 from subprocess import call
+from matplotlib import colors
 
 '''
 
@@ -945,5 +946,16 @@ def corners_res(dom):
     
     
     return llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res
+    
+def create_ncep_radar_ref_color_table():
+
+#set radar reflectivity color table to match that used at ncep operation
+   cmap = colors.ListedColormap(['lightgrey','skyblue','dodgerblue','mediumblue',\
+               'lime','limegreen','green','yellow','gold','darkorange','red','firebrick',\
+               'darkred','fuchsia','darkorchid','black'])
+   bounds=[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80]
+   norm = colors.BoundaryNorm(bounds, cmap.N)
+   return cmap,bounds,norm
+
     
         
