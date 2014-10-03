@@ -571,6 +571,15 @@ def reflect():
 	reflect_coltbl = LinearSegmentedColormap('REFLECT_COLTBL',reflect_cdict)
         return reflect_coltbl
 
+def create_ncep_radar_ref_color_table():
+
+#set radar reflectivity color table to match that used at ncep operation
+   cmap = colors.ListedColormap(['lightgrey','skyblue','dodgerblue','mediumblue',\
+               'lime','limegreen','green','yellow','gold','darkorange','red','firebrick',\
+               'darkred','fuchsia','darkorchid','black'])
+   bounds=[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80]
+   norm = colors.BoundaryNorm(bounds, cmap.N)
+   return cmap,bounds,norm
 
 
 '''
@@ -947,15 +956,3 @@ def corners_res(dom):
     
     return llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res
     
-def create_ncep_radar_ref_color_table():
-
-#set radar reflectivity color table to match that used at ncep operation
-   cmap = colors.ListedColormap(['lightgrey','skyblue','dodgerblue','mediumblue',\
-               'lime','limegreen','green','yellow','gold','darkorange','red','firebrick',\
-               'darkred','fuchsia','darkorchid','black'])
-   bounds=[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80]
-   norm = colors.BoundaryNorm(bounds, cmap.N)
-   return cmap,bounds,norm
-
-    
-        
