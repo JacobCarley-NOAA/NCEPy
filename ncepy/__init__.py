@@ -95,7 +95,7 @@ def lcc_2_earth_winds(true_lat,lov_lon,earth_lons,ug,vg):
   if ndims > 2:    
     # Raise error and quit!
     raise SystemExit("Input winds for rotation have greater than 2 dimensions!")
-  
+  if lov_lon > 0.: lov_lon=lov_lon-360.  
   dtr=np.pi/180.0             # Degrees to radians
   rotcon_p=np.sin(true_lat*dtr) # Wind rotation constant - can easily make compat. with                                  # Polar Stereo by setting this to 1
     
@@ -134,7 +134,7 @@ def ps_2_earth_winds(lov_lon,earth_lons,ug,vg):
   if ndims > 2:
     # Raise error and quit!
     raise SystemExit("Input winds for rotation have greater than 2 dimensions!")
-
+  if lov_lon > 0.: lov_lon=lov_lon-360.
   dtr=np.pi/180.0             # Degrees to radians
   angles = (earth_lons-lov_lon)*dtr
   sinx2 = np.sin(angles)
