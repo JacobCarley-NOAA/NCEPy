@@ -808,10 +808,10 @@ def corners_res(dom):
 
 
     if dom=='CONUS':
-      llcrnrlon=-125.0
-      llcrnrlat=20.0
-      urcrnrlon=-60.0
-      urcrnrlat=52.0
+      llcrnrlon=-121.5
+      llcrnrlat=22.0
+      urcrnrlon=-64.5
+      urcrnrlat=50.0
       res='l'
     elif dom=='NW':
       llcrnrlon=-125.0
@@ -947,10 +947,10 @@ def corners_res(dom):
       res='h'
     else:
       #default to CONUS
-      llcrnrlon=-125.0
-      llcrnrlat=20.0
-      urcrnrlon=-60.0
-      urcrnrlat=52.0
+      llcrnrlon=-121.5
+      llcrnrlat=22.0
+      urcrnrlon=-64.5
+      urcrnrlat=50.0
       res='l'          
     
     
