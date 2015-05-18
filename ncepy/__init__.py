@@ -68,6 +68,98 @@ def ndate(cdate,hours):
 WINDS 
 
 '''
+
+def get_rotll_rotation_angles(instnlat,instnlon,TLM0D,TPH0D):
+  #
+  # Returns the cosine and sine of the rotation anlge(s) needed to 
+  # transform rotated lat lon grid-relative winds to 
+  # earth-relative and vice-versa.
+  #
+  # INPUT Args:
+  #
+  # TLM0D - the angle of rotation of the transformed lat-lon
+  #         system in the longitudinal direction, degs 
+  # TPH0D - the angle of rotation of the transformed lat-lon
+  #         system in the latitudinal direction, degs
+  # instnlat - latitude in earth coords (degs)
+  # instnlon - longitude in earth coords (degs) ---> Input is assumed to be
+  #            negative west and we convert in this routine to get the right
+  #            rotation angles
+  # u_grid - u component grid relative winds from rotated lat-lon grid
+  # v_grid - v component grid relative winds from rotated lat-lon grid
+  #
+  # Returns COSALP,SINALP
+  ###################################################################
+
+  # Enforce -180 to 180 convention first (negative west)
+  instnlon=np.where(instnlon<180.,instnlon-360,instnlon)
+  instnlon=np.where(instnlon<-180.,instnlon+360,instnlon)
+
+  ############################################################################
+  #############        THIS IS VITAL                            ##############
+  #############  ROUTINE ASSUMES LONGITUDES ARE POSITIVE MOVING ##############
+  ############## WESTWARD FROM THE PRIME MERIDIAN               ##############
+  ############## SO -70.0 DEG NEEDS TO BE CONVERTED TO 70.0     ##############
+
+  instnlon=instnlon*-1.
+
+  #########################################
+  DTR=np.pi/180.
+  stnlat=instnlat*DTR
+  stnlon=instnlon*DTR
+  SINPH0=np.sin(TPH0D*DTR)
+  COSPH0=np.cos(TPH0D*DTR)
+  DLM    = stnlon+TLM0D*DTR
+  XX     = COSPH0*np.cos(stnlat)*np.cos(DLM)+SINPH0*np.sin(stnlat)
+  YY     = -np.cos(stnlat)*np.sin(DLM)
+  TLON   = np.arctan(YY/XX)
+  ALPHA  = np.arcsin(SINPH0*np.sin(TLON)/np.cos(stnlat))
+  SINALP = np.sin(ALPHA)
+  COSALP = np.cos(ALPHA)
+  return COSALP,SINALP
+
+def rotll2earth_winds(u,v,earthlat,earthlon,TLM0D,TPH0D):
+  #
+  # Rotate winds from rotated lat lon grid to earth relative
+  #
+  # INPUT Args:
+  #   u, v -  Grid relative u and v winds
+  #   TLM0D - the angle of rotation of the transformed lat-lon
+  #         system in the longitudinal direction, degs 
+  #   TPH0D - the angle of rotation of the transformed lat-lon
+  #         system in the latitudinal direction, degs
+  #   earthlat - latitude in earth coords (degs)
+  #   earthlon - longitude in earth coords (degs)
+  # 
+  #
+  # Returns u_earth,v_earth 
+  ###################################################################
+  COSALP,SINALP=get_rotll_rotation_angles(earthlat,earthlon,TLM0D,TPH0D)
+  u_earth = u*COSALP+v*SINALP #This is an elementwise product: NOT a matrix multiply
+  v_earth = v*COSALP-u*SINALP #This is an elementwise product: NOT a matrix multiply
+  return u_earth,v_earth
+
+def earth2rotll_winds(u,v,earthlat,earthlon,TLM0D,TPH0D):      
+  #
+  # Rotate winds from earth relative to rotated lat-lon grid
+  #
+  # INPUT Args:
+  #   u, v -  Earth relative u and v winds
+  #   TLM0D - the angle of rotation of the transformed lat-lon
+  #         system in the longitudinal direction, degs 
+  #   TPH0D - the angle of rotation of the transformed lat-lon
+  #         system in the latitudinal direction, degs
+  #   earthlat - latitude in earth coords (degs)
+  #   earthlon - longitude in earth coords (degs)
+  #
+  # Returns u_grid,v_grid
+  ###################################################################
+  COSALP,SINALP=get_rotll_rotation_angles(earthlat,earthlon,TLM0D,TPH0D)
+  u_grid = u*COSALP-v*SINALP #This is an elementwise product: NOT a matrix multiply
+  v_grid = u*SINALP+v*COSALP #This is an elementwise product: NOT a matrix multiply
+  return u_grid,v_grid
+
+
 def lcc_2_earth_winds(true_lat,lov_lon,earth_lons,ug,vg):
 #  Rotate winds from LCC relative to earth relative.
 #   This routine is vectorized and *should* work on any size 2D vg and ug arrays.
@@ -143,9 +235,6 @@ def ps_2_earth_winds(lov_lon,earth_lons,ug,vg):
   ve =-sinx2*ug+cosx2*vg   #This is an elementwise product: NOT a matrix multiply
 
   return ue,ve
-
-
-
 
 
 def sd2uv(spd,dir):
@@ -727,8 +816,87 @@ def es(T):
     """Returns saturation vapor pressure (Pascal) at temperature T (Celsius)
     Formula 2.17 in Rogers&Yau"""
     return 611.2*np.exp(17.67*T/(T+243.5))
+
+
+
+def SMOOTH(FIELD,SMTH=0.5):
+
+  '''
+   Smoothing Function pulled from NCEP UPP code SMOOTH.f
+
+   SUBPROGRAM:    SMOOTH      SMOOTH A METEOROLOGICAL FIELD
+      PRGMMR: STAN BENJAMIN    ORG: FSL/PROFS  DATE: 90-06-15 
     
+    ABSTRACT: SHAPIRO SMOOTHER. 
     
+    PROGRAM HISTORY LOG: 
+      85-12-09  S. BENJAMIN   ORIGINAL VERSION
+    2013        J. CARLEY     Python port
+    
+    USAGE:    CALL SMOOTH (FIELD,HOLD,IX,IY,SMTH) 
+      INPUT ARGUMENT LIST: 
+        FIELD    - REAL ARRAY  FIELD(IX,IY)
+                               METEOROLOGICAL FIELD
+  
+      OPTIONAL INPUT:
+        SMTH     - REAL (defaults to 0.5)      
+  
+     OUTPUT ARGUMENT LIST:   
+       FIELD    - REAL ARRAY  FIELD(IX,IY)
+                              SMOOTHED METEOROLOGICAL FIELD
+   
+   REMARKS: REFERENCE: SHAPIRO, 1970: "SMOOTHING, FILTERING, AND
+     BOUNDARY EFFECTS", REV. GEOPHYS. SP. PHYS., 359-387.
+     THIS FILTER IS OF THE TYPE 
+           Z(I) = (1-S)Z(I) + S(Z(I+1)+Z(I-1))/2
+     FOR A FILTER WHICH IS SUPPOSED TO DAMP 2DX WAVES COMPLETELY
+     BUT LEAVE 4DX AND LONGER WITH LITTLE DAMPING,
+     IT SHOULD BE RUN WITH 2 PASSES USING SMTH (OR S) OF 0.5
+     AND -0.5.
+
+   Directions on calling the routine.  Call from inside a loop where the
+     iterator is the number of smoothing passes.  Smoothing passes can 
+     set as a function of grid-spacing (how it's handled for the RAP/HRRR)
+       Example:
+
+      Number of smoothing passes for each field
+      SMOOTH=int(5.*(13500./dxm)) # for u, v, and heights
+      for N in np.arange(NSMOOTH):
+        SMOOTH(FIELD,SMTH)
+   
+  '''
+    
+  IX,IY=np.shape(FIELD)
+
+  HOLD=np.zeros([IX,2])
+  SMTH1 = 0.25 * SMTH * SMTH
+  SMTH2 = 0.5  * SMTH * (1.-SMTH)
+  SMTH3 = (1.-SMTH) * (1.-SMTH)
+  SMTH4 = (1.-SMTH)
+  SMTH5 = 0.5 * SMTH
+  I1 = 1
+  I2 = 0
+
+  for J in np.arange(1,IY-1):
+    IT = I1
+    I1 = I2
+    I2 = IT
+    SUM1 = FIELD[0:IX-2,J+1] + FIELD[0:IX-2,J-1] + FIELD[2:IX,J+1] + FIELD[2:IX,J-1]
+    SUM2 = FIELD[1:IX-1,J+1] + FIELD[2:IX,J  ] + FIELD[1:IX-1,J-1] + FIELD[0:IX-2,J  ]
+    HOLD[1:IX-1,I1] = SMTH1*SUM1 + SMTH2*SUM2 + SMTH3*FIELD[1:IX-1,J]
+    if J!=1: FIELD[1:IX-1,J-1] = HOLD[1:IX-1,I2]
+    # END OF J LOOP
+
+  FIELD[1:IX-1,IY-2] = HOLD[1:IX-1,I1]
+
+  for I in np.arange(1,IX-1):
+    FIELD[I     ,   0] = SMTH4* FIELD[I     ,   0] + SMTH5 * (FIELD[I-1   ,   0] + FIELD[I+1, 0])
+    FIELD[I     ,IY-1] = SMTH4* FIELD[I     ,IY-1] + SMTH5 * (FIELD[I-1   ,IY-1] + FIELD[I+1,IY-1])
+
+  for J in np.arange(1,IY-1):
+    FIELD[0,J] = SMTH4* FIELD[0,J] + SMTH5 * (FIELD[0,J-1] + FIELD[0,J+1])
+
+
 def pint2pmid_3d(pint):
  #convert pressure at interface layers to mid-layers
  #  
