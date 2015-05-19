@@ -342,6 +342,27 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
         cmap(np.linspace(minval, maxval, n)))
     return new_cmap
 
+def mrms_radarmap(cint=None):
+  if cint != None:  #Map colors to provided contour intervals (cint)
+    r=[1.00,0.00,0.00,0.00,0.00,0.00,0.00,1.00,0.91,1.00,1.00,0.80,0.60,1.00,0.60]
+    g=[1.00,0.93,0.63,0.00,1.00,0.78,0.56,1.00,0.75,0.56,0.00,0.20,0.00,0.00,0.20]
+    b=[1.00,0.93,0.96,0.96,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.00,0.80]
+    rgb=zip(r,g,b)
+    cmap=colors.ListedColormap(rgb,len(r))
+    cmap.set_over(color='white')
+    cmap.set_under(color='white')
+    norm = colors.BoundaryNorm(cint, cmap.N)
+    return cmap,norm
+  else:
+    r=[0.00,0.00,0.00,0.00,0.00,0.00,1.00,0.91,1.00,1.00,0.80,0.60,1.00,0.60]
+    g=[0.93,0.63,0.00,1.00,0.78,0.56,1.00,0.75,0.56,0.00,0.20,0.00,0.00,0.20]
+    b=[0.93,0.96,0.96,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.00,0.80]
+    rgb=zip(r,g,b)
+    cmap=colors.ListedColormap(rgb,len(r))
+    cmap.set_over(color='white')
+    cmap.set_under(color='white')
+    return cmap
+
 def truncated_ncl_radarmap():
       # Radar color map from NCL
       r = np.array([255,255,8,255,255,255,221,188,121,121,295])
@@ -364,27 +385,6 @@ def truncated_ncl_radarmap():
       ncl_reflect_coltbl.set_over(color='white')
       return ncl_reflect_coltbl
 
-
-def tcamt():
-      r = np.array([255,230,200,180,150,120,80,55,30,15,225,180,150,120,80,60,40,30,20,220,192,160,128,112,72,60,45,40,250,240,225,200,180,160,140,120,100])
-      g = np.array([255,255,255,250,245,245,240,210,180,160,255,240,210,185,165,150,130,110,100,220,180,140,112,96,60,40,30,0,240,220,190,160,140,120,100,80,60])
-      b = np.array([255,225,190,170,140,115,80,60,30,15,255,250,250,250,245,245,240,235,210,255,255,255,235,220,200,180,165,160,230,210,180,150,130,110,90,70,50])
-      xsize=np.arange(np.size(r))
-      r = r/255.
-      g = g/255.
-      b = b/255.
-      red = []
-      blue = []
-      green = []
-      for i in range(len(xsize)):
-          xNorm=np.float(i)/(np.float(np.size(r))-1.0)
-          red.append([xNorm,r[i],r[i]])
-          green.append([xNorm,g[i],g[i]])
-          blue.append([xNorm,b[i],b[i]])
-      colorDict = {"red":red, "green":green, "blue":blue}
-      tcamt = LinearSegmentedColormap('TCAMT',colorDict)
-      return tcamt 
-
 def ncl_radarmap():
       # Radar color map from NCL
       r = np.array([255,255,0,0,0,9,0,8,255,255,255,221,188,121,121,295])
@@ -406,6 +406,26 @@ def ncl_radarmap():
       ncl_reflect_coltbl = LinearSegmentedColormap('NCL_REFLECT_COLTBL',colorDict)
       ncl_reflect_coltbl.set_over(color='white')
       return ncl_reflect_coltbl
+
+def tcamt():
+      r = np.array([255,230,200,180,150,120,80,55,30,15,225,180,150,120,80,60,40,30,20,220,192,160,128,112,72,60,45,40,250,240,225,200,180,160,140,120,100])
+      g = np.array([255,255,255,250,245,245,240,210,180,160,255,240,210,185,165,150,130,110,100,220,180,140,112,96,60,40,30,0,240,220,190,160,140,120,100,80,60])
+      b = np.array([255,225,190,170,140,115,80,60,30,15,255,250,250,250,245,245,240,235,210,255,255,255,235,220,200,180,165,160,230,210,180,150,130,110,90,70,50])
+      xsize=np.arange(np.size(r))
+      r = r/255.
+      g = g/255.
+      b = b/255.
+      red = []
+      blue = []
+      green = []
+      for i in range(len(xsize)):
+          xNorm=np.float(i)/(np.float(np.size(r))-1.0)
+          red.append([xNorm,r[i],r[i]])
+          green.append([xNorm,g[i],g[i]])
+          blue.append([xNorm,b[i],b[i]])
+      colorDict = {"red":red, "green":green, "blue":blue}
+      tcamt = LinearSegmentedColormap('TCAMT',colorDict)
+      return tcamt 
 
 def ncl_t2m():
     # Grabbed this colormap from NCL
