@@ -1027,7 +1027,7 @@ def corners_res(dom):
       res='l'
     elif dom=='SC':
       llcrnrlon=-109.0
-      llcrnrlat=23.0
+      llcrnrlat=25.0
       urcrnrlon=-83.0
       urcrnrlat=38.0
       res='l'
