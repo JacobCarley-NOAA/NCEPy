@@ -160,27 +160,33 @@ def earth2rotll_winds(u,v,earthlat,earthlon,TLM0D,TPH0D):
   return u_grid,v_grid
 
 
+
 def lcc_2_earth_winds(true_lat,lov_lon,earth_lons,ug,vg):
-#  Rotate winds from LCC relative to earth relative.
-#   This routine is vectorized and *should* work on any size 2D vg and ug arrays.
-#   Program will quit if dimensions are too large.
-#
-# Input args:
-#  true_lat = True latitidue for LCC projection (single value in degrees)
-#  lov_lon  = The LOV value from grib (e.g. - -95.0) (single value in degrees)
-#              Grib doc says: "Lov = orientation of the grid; i.e. the east longitude value of
-#                              the meridian which is parallel to the Y-axis (or columns of the grid)
-#                              along which latitude increases as the Y-coordinate increases (the 
-#                              orientation longitude may or may not appear on a particular grid).
-#              
-#  earth_lons = Earth relative longitudes (can be an array, in degrees)
-#  ug, vg     = Grid relative u and v wind components (can be arrays, in m/s)
-#  
-# Returns:
-#  ue, ve = Earth relative u and v wind components (m/s)
-	  
-	  
-	  
+  #  Rotate winds from LCC relative to earth relative.
+    proj='lcc'
+    ue,ve=rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False):	  
+  return ue,ve
+
+def rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False):
+  #  Rotate winds from LCC relative to earth relative (or vice-versa if inverse==true)
+  #   This routine is vectorized and *should* work on any size 2D vg and ug arrays.
+  #   Program will quit if dimensions are too large.
+  #
+  # Input args:
+  #  true_lat = True latitidue for LCC projection (single value in degrees)
+  #  lov_lon  = The LOV value from grib (e.g. - -95.0) (single value in degrees)
+  #              Grib doc says: "Lov = orientation of the grid; i.e. the east longitude value of
+  #                              the meridian which is parallel to the Y-axis (or columns of the grid)
+  #                              along which latitude increases as the Y-coordinate increases (the 
+  #                              orientation longitude may or may not appear on a particular grid).
+  #              
+  #  earth_lons = Earth relative longitudes (can be an array, in degrees)
+  #  uin, vin     = Input winds to rotate
+  #  
+  # Returns:
+  #  uout, vout = Output, rotated winds
+  #-----------------------------------------------------------------------------------------------------
+ 	  
   # Get size and length of input u winds, if not 2d, raise an error  
   q=np.shape(ug)
   ndims=len(q)
@@ -189,52 +195,37 @@ def lcc_2_earth_winds(true_lat,lov_lon,earth_lons,ug,vg):
     raise SystemExit("Input winds for rotation have greater than 2 dimensions!")
   if lov_lon > 0.: lov_lon=lov_lon-360.  
   dtr=np.pi/180.0             # Degrees to radians
-  rotcon_p=np.sin(true_lat*dtr) # Wind rotation constant - can easily make compat. with                                  # Polar Stereo by setting this to 1
-    
+
+  if not isinstance(inverse, bool):
+    raise TypeError("**kwarg inverse must be of type bool.")
+
+  # Compute rotation constant which is also
+  # known as the Lambert cone constant.  In the case 
+  # of a polar stereographic projection, this is one.
+  # See the following pdf for excellent documentation
+  # http://www.dtcenter.org/met/users/docs/write_ups/velocity.pdf
+  if proj.lower()=='lcc':
+    rotcon_p=np.sin(true_lat*dtr)
+  elif proj.lower() in ['stere','spstere', 'npstere']:
+    rotcon_p=1.0
+  else:
+    raise SystemExit("Unsupported map projection: "+proj.lower()+" for wind rotation.")
+
   angles = rotcon_p*(earth_lons-lov_lon)*dtr 
   sinx2 = np.sin(angles)
   cosx2 = np.cos(angles)
-  ue = cosx2*ug+sinx2*vg   #This is an elementwise product: NOT a matrix multiply
-  ve =-sinx2*ug+cosx2*vg   #This is an elementwise product: NOT a matrix multiply
 
-  return ue,ve
+  # Steps below are elementwise products, not matrix mutliplies
+  if inverse==False:
+    # Return the earth relative winds
+    uout = cosx2*uin+sinx2*vin
+    vout =-sinx2*uin+cosx2*vin
+  elif inverse==True:
+    # Return the grid relative winds
+    uout = cosx2*uin-sinx2*vin
+    vout = sinx2*uin+cosx2*vin
 
-
-def ps_2_earth_winds(lov_lon,earth_lons,ug,vg):
-#  Rotate winds from polar stereo relative to earth relative.
-#   This routine is vectorized and *should* work on any size 2D vg and ug arrays.
-#   Program will quit if dimensions are too large.
-#
-# Input args:
-#  lov_lon  = The LOV value from grib (e.g. - -95.0) (single value in degrees)
-#              Grib doc says: "Lov = orientation of the grid; i.e. the east longitude value of
-#                              the meridian which is parallel to the Y-axis (or columns of the grid)
-#                              along which latitude increases as the Y-coordinate increases (the 
-#                              orientation longitude may or may not appear on a particular grid).
-#              
-#  earth_lons = Earth relative longitudes (can be an array, in degrees)
-#  ug, vg     = Grid relative u and v wind components (can be arrays, in m/s)
-#  
-# Returns:
-#  ue, ve = Earth relative u and v wind components (m/s)
-
-
-
-  # Get size and length of input u winds, if not 2d, raise an error  
-  q=np.shape(ug)
-  ndims=len(q)
-  if ndims > 2:
-    # Raise error and quit!
-    raise SystemExit("Input winds for rotation have greater than 2 dimensions!")
-  if lov_lon > 0.: lov_lon=lov_lon-360.
-  dtr=np.pi/180.0             # Degrees to radians
-  angles = (earth_lons-lov_lon)*dtr
-  sinx2 = np.sin(angles)
-  cosx2 = np.cos(angles)
-  ue = cosx2*ug+sinx2*vg   #This is an elementwise product: NOT a matrix multiply
-  ve =-sinx2*ug+cosx2*vg   #This is an elementwise product: NOT a matrix multiply
-
-  return ue,ve
+  return uout,vout
 
 
 def sd2uv(spd,dir):
@@ -979,7 +970,7 @@ def plt_highs_and_lows(m,mat,lons,lats,mode='wrap',window='10'):
                     bbox = dict(boxstyle="square",ec='None',fc=(1,1,1,0.5)))
             xyplotted.append((x,y))
     
-def corners_res(dom):
+def corners_res(dom,proj='lcc'):
 #Sets domain corners and
 # plotting resolutions
 # for commonly used domains
@@ -995,6 +986,55 @@ def corners_res(dom):
 #                  Default ``c``.   
 
 
+  if proj.lower() in ['lcc','laea','merc']:
+    llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res=_default_corners_res(dom)
+  elif proj.lower() in ['stere','spstere', 'npstere']:
+    llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res=_stere_corners_res(dom)
+  else:
+    llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res=_default_corners_res(dom)
+
+  return llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res
+
+def _stere_corners_res(dom)
+    if dom=='AK':
+      llcrnrlon=-180.0
+      llcrnrlat=40.0
+      urcrnrlon=-115.0
+      urcrnrlat=80.0
+      res='l'
+    elif dom=='NAK':
+      llcrnrlon=-168.25
+      llcrnrlat=64.0
+      urcrnrlon=-137.0
+      urcrnrlat=71.25
+      res='i'
+    elif dom=='SAK':
+      llcrnrlon=-163.0
+      llcrnrlat=53.5
+      urcrnrlon=-137.0
+      urcrnrlat=65.5
+      res='i'
+    elif dom=='SWAK':
+      llcrnrlon=-165.0
+      llcrnrlat=52.0
+      urcrnrlon=-145.0
+      urcrnrlat=63.0
+      res='i'
+    elif dom=='SEAK':
+      llcrnrlon=-146.0
+      llcrnrlat=52.0
+      urcrnrlon=-125.5
+      urcrnrlat=63.0
+      res='i'
+    else:
+      #Default to Alaska if we cannot find a match
+      llcrnrlon=-180.0
+      llcrnrlat=40.0
+      urcrnrlon=-115.0
+      urcrnrlat=80.0
+      res='l'
+
+def _default_corners_res(dom):
     if dom=='CONUS':
       llcrnrlon=-121.5
       llcrnrlat=22.0
