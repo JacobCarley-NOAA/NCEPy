@@ -159,12 +159,10 @@ def earth2rotll_winds(u,v,earthlat,earthlon,TLM0D,TPH0D):
   v_grid = u*SINALP+v*COSALP #This is an elementwise product: NOT a matrix multiply
   return u_grid,v_grid
 
-
-
 def lcc_2_earth_winds(true_lat,lov_lon,earth_lons,ug,vg):
   #  Rotate winds from LCC relative to earth relative.
-    proj='lcc'
-    ue,ve=rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False):	  
+  proj='lcc'
+  ue,ve=rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False)
   return ue,ve
 
 def rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False):
@@ -188,7 +186,7 @@ def rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False):
   #-----------------------------------------------------------------------------------------------------
  	  
   # Get size and length of input u winds, if not 2d, raise an error  
-  q=np.shape(ug)
+  q=np.shape(uin)
   ndims=len(q)
   if ndims > 2:    
     # Raise error and quit!
@@ -970,7 +968,7 @@ def plt_highs_and_lows(m,mat,lons,lats,mode='wrap',window='10'):
                     bbox = dict(boxstyle="square",ec='None',fc=(1,1,1,0.5)))
             xyplotted.append((x,y))
     
-def corners_res(dom,proj='lcc'):
+def corners_res(dom,proj):
 #Sets domain corners and
 # plotting resolutions
 # for commonly used domains
@@ -995,12 +993,12 @@ def corners_res(dom,proj='lcc'):
 
   return llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res
 
-def _stere_corners_res(dom)
+def _stere_corners_res(dom):
     if dom=='AK':
-      llcrnrlon=-180.0
+      llcrnrlon=-170.0
       llcrnrlat=40.0
       urcrnrlon=-115.0
-      urcrnrlat=80.0
+      urcrnrlat=75.0
       res='l'
     elif dom=='NAK':
       llcrnrlon=-168.25
@@ -1033,6 +1031,7 @@ def _stere_corners_res(dom)
       urcrnrlon=-115.0
       urcrnrlat=80.0
       res='l'
+    return llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res
 
 def _default_corners_res(dom):
     if dom=='CONUS':
@@ -1179,8 +1178,6 @@ def _default_corners_res(dom):
       llcrnrlat=22.0
       urcrnrlon=-64.5
       urcrnrlat=50.0
-      res='l'          
-    
-    
+      res='l'    
     return llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res
     
