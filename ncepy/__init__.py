@@ -26,10 +26,7 @@ def ndate(cdate,hours):
 
    if not isinstance(hours, int):
      sys.exit('NDATE: Error - input delta hour must be an integer.  Exit!') 
-
-
-
-   
+ 
    indate=cdate.strip()
    hh=indate[8:10] 
    yyyy=indate[0:4]
@@ -162,7 +159,7 @@ def earth2rotll_winds(u,v,earthlat,earthlon,TLM0D,TPH0D):
 def lcc_2_earth_winds(true_lat,lov_lon,earth_lons,ug,vg):
   #  Rotate winds from LCC relative to earth relative.
   proj='lcc'
-  ue,ve=rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False)
+  ue,ve=rotate_wind(true_lat,lov_lon,earth_lons,ug,vg,proj,inverse=False)
   return ue,ve
 
 def rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False):
@@ -968,7 +965,7 @@ def plt_highs_and_lows(m,mat,lons,lats,mode='wrap',window='10'):
                     bbox = dict(boxstyle="square",ec='None',fc=(1,1,1,0.5)))
             xyplotted.append((x,y))
     
-def corners_res(dom,proj):
+def corners_res(dom,proj='lcc'):
 #Sets domain corners and
 # plotting resolutions
 # for commonly used domains
@@ -995,41 +992,41 @@ def corners_res(dom,proj):
 
 def _stere_corners_res(dom):
     if dom=='AK':
-      llcrnrlon=-170.0
-      llcrnrlat=40.0
+      llcrnrlon=-175.0
+      llcrnrlat=42.5
       urcrnrlon=-115.0
       urcrnrlat=75.0
       res='l'
     elif dom=='NAK':
-      llcrnrlon=-168.25
-      llcrnrlat=64.0
+      llcrnrlon=-168.75
+      llcrnrlat=62.5
       urcrnrlon=-137.0
-      urcrnrlat=71.25
+      urcrnrlat=75.0
       res='i'
     elif dom=='SAK':
       llcrnrlon=-163.0
       llcrnrlat=53.5
       urcrnrlon=-137.0
-      urcrnrlat=65.5
+      urcrnrlat=66.5
       res='i'
     elif dom=='SWAK':
-      llcrnrlon=-165.0
-      llcrnrlat=52.0
-      urcrnrlon=-145.0
-      urcrnrlat=63.0
+      llcrnrlon=-172.5
+      llcrnrlat=45.0
+      urcrnrlon=-147.5
+      urcrnrlat=62.5
       res='i'
     elif dom=='SEAK':
       llcrnrlon=-146.0
       llcrnrlat=52.0
-      urcrnrlon=-125.5
-      urcrnrlat=63.0
+      urcrnrlon=-127.5
+      urcrnrlat=61.5
       res='i'
     else:
       #Default to Alaska if we cannot find a match
-      llcrnrlon=-180.0
-      llcrnrlat=40.0
+      llcrnrlon=-175.0
+      llcrnrlat=42.5
       urcrnrlon=-115.0
-      urcrnrlat=80.0
+      urcrnrlat=75.0
       res='l'
     return llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res
 
