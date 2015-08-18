@@ -1035,7 +1035,7 @@ def _default_corners_res(dom):
       llcrnrlon=-121.5
       llcrnrlat=22.0
       urcrnrlon=-64.5
-      urcrnrlat=49.5
+      urcrnrlat=48.0
       res='l'
     elif dom=='NW':
       llcrnrlon=-125.0
@@ -1053,13 +1053,13 @@ def _default_corners_res(dom):
       llcrnrlon=-110.0
       llcrnrlat=36.0
       urcrnrlon=-83.0
-      urcrnrlat=50.0
+      urcrnrlat=48.0
       res='l'
     elif dom=='NE':
       llcrnrlon=-84.0
       llcrnrlat=35.0
       urcrnrlon=-60.0
-      urcrnrlat=49.0
+      urcrnrlat=48.0
       res='l'
     elif dom=='SC':
       llcrnrlon=-109.0
@@ -1083,7 +1083,7 @@ def _default_corners_res(dom):
       llcrnrlon=-96.0
       llcrnrlat=36.0
       urcrnrlon=-72.0
-      urcrnrlat=49.0
+      urcrnrlat=48.0
       res='l'
     elif dom=='AK':
       llcrnrlon=-180.0
@@ -1174,7 +1174,7 @@ def _default_corners_res(dom):
       llcrnrlon=-121.5
       llcrnrlat=22.0
       urcrnrlon=-64.5
-      urcrnrlat=49.5
+      urcrnrlat=48.0
       res='l'    
     return llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res
     
