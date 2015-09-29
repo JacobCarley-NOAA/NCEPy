@@ -1,11 +1,8 @@
-from matplotlib.colors import LinearSegmentedColormap,ListedColormap
-from mpl_toolkits.basemap import Basemap
 import numpy as np
-import os; import sys
+import sys
 from scipy.ndimage.filters import minimum_filter, maximum_filter
 import matplotlib.pyplot as plt
-from datetime import *; from dateutil.relativedelta import *
-from dateutil.parser import *
+import dateutil.relativedelta, dateutil.parser
 from subprocess import call
 from matplotlib import colors
 
@@ -16,49 +13,31 @@ Time and date
 '''
 
 def ndate(cdate,hours):
-   # Cdate should be in the form of YYYYMMDDHH and MUST be a string!!
-     
-   # Decompose the cycle dates and times
-   # Python goes to n-1
-   
    if not isinstance(cdate, str):
-     sys.exit('NDATE: Error - input cdate must be a string.  Exit!')
-
+     if isinstance(cdate, int):
+       cdate=str(cdate)
+     else:
+       sys.exit('NDATE: Error - input cdate must be string or integer.  Exit!')
    if not isinstance(hours, int):
-     sys.exit('NDATE: Error - input delta hour must be an integer.  Exit!') 
- 
+     if isinstance(hours, str):
+       hours=int(hours)
+     else:
+       sys.exit('NDATE: Error - input delta hour must be a string or integer.  Exit!') 
+
    indate=cdate.strip()
    hh=indate[8:10] 
    yyyy=indate[0:4]
    mm=indate[4:6]
-   dd=indate[6:8]
-   
+   dd=indate[6:8]  
    #set date/time field
    parseme=(yyyy+' '+mm+' '+dd+' '+hh)
-   print("NDATE: String for parser: "+parseme)
-   datetime_cdate=parse(parseme) 
-   valid=datetime_cdate+relativedelta(hours=+hours)
-   vyyyy=repr(valid.year)
-   vm=valid.month
-   vd=valid.day
-   vh=valid.hour
-   if vm < 10:
-     vmm='0'+repr(vm)
-   else: 
-     vmm=repr(vm)  
-   if vd < 10:
-     vdd='0'+repr(vd)
-   else: 
-     vdd=repr(vd)
-   if vh < 10:
-     vhh='0'+repr(vh)
-   else: 
-     vhh=repr(vh)
-    
-   vCDATE=vyyyy+vmm+vdd+vhh
-   return vCDATE
-
-
+   datetime_cdate=dateutil.parser.parse(parseme) 
+   valid=datetime_cdate+dateutil.relativedelta.relativedelta(hours=+hours)
+   vyyyy=str(valid.year)
+   vm=str(valid.month).zfill(2)
+   vd=str(valid.day).zfill(2)
+   vh=str(valid.hour).zfill(2)  
+   return vyyyy+vm+vd+vh
 
 '''
 
@@ -323,7 +302,7 @@ COLOR SHADING / COLOR BARS
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
 # Grabbed from stackoverflow post: 
 #   http://stackoverflow.com/questions/18926031/how-to-extract-a-subset-of-a-colormap-as-a-new-colormap-in-matplotlib
-    new_cmap = LinearSegmentedColormap.from_list(
+    new_cmap = colors.LinearSegmentedColormap.from_list(
         'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
         cmap(np.linspace(minval, maxval, n)))
     return new_cmap
@@ -367,7 +346,7 @@ def truncated_ncl_radarmap():
           green.append([xNorm,g[i],g[i]])
           blue.append([xNorm,b[i],b[i]])
       colorDict = {"red":red, "green":green, "blue":blue}
-      ncl_reflect_coltbl = LinearSegmentedColormap('NCL_REFLECT_COLTBL',colorDict)
+      ncl_reflect_coltbl = colors.LinearSegmentedColormap('NCL_REFLECT_COLTBL',colorDict)
       ncl_reflect_coltbl.set_over(color='white')
       return ncl_reflect_coltbl
 
@@ -389,7 +368,7 @@ def ncl_radarmap():
           green.append([xNorm,g[i],g[i]])
           blue.append([xNorm,b[i],b[i]])
       colorDict = {"red":red, "green":green, "blue":blue}
-      ncl_reflect_coltbl = LinearSegmentedColormap('NCL_REFLECT_COLTBL',colorDict)
+      ncl_reflect_coltbl = colors.LinearSegmentedColormap('NCL_REFLECT_COLTBL',colorDict)
       ncl_reflect_coltbl.set_over(color='white')
       return ncl_reflect_coltbl
 
@@ -410,7 +389,7 @@ def tcamt():
           green.append([xNorm,g[i],g[i]])
           blue.append([xNorm,b[i],b[i]])
       colorDict = {"red":red, "green":green, "blue":blue}
-      tcamt = LinearSegmentedColormap('TCAMT',colorDict)
+      tcamt = colors.LinearSegmentedColormap('TCAMT',colorDict)
       return tcamt 
 
 def ncl_t2m():
@@ -433,7 +412,7 @@ def ncl_t2m():
         green.append([xNorm,g[i],g[i]])
         blue.append([xNorm,b[i],b[i]])
     colorDict = {"red":red, "green":green, "blue":blue}
-    ncl_t2m_coltbl = LinearSegmentedColormap('NCL_T2M_COLTBL',colorDict)
+    ncl_t2m_coltbl = colors.LinearSegmentedColormap('NCL_T2M_COLTBL',colorDict)
     ncl_t2m_coltbl.set_over(color='white')
     return ncl_t2m_coltbl
 
@@ -454,7 +433,7 @@ def ncl_snow():
         green.append([xNorm,g[i],g[i]])
         blue.append([xNorm,b[i],b[i]])
     colorDict = {"red":red, "green":green, "blue":blue}
-    ncl_snow_coltbl = LinearSegmentedColormap('NCL_SNOW_COLTBL',colorDict)
+    ncl_snow_coltbl = colors.LinearSegmentedColormap('NCL_SNOW_COLTBL',colorDict)
     return ncl_snow_coltbl
 
 def ncl_perc_11Lev():
@@ -474,7 +453,7 @@ def ncl_perc_11Lev():
         green.append([xNorm,g[i],g[i]])
         blue.append([xNorm,b[i],b[i]])
     colorDict = {"red":red, "green":green, "blue":blue}
-    my_coltbl = LinearSegmentedColormap('NCL_PERC_11LEV_COLTBL',colorDict)
+    my_coltbl = colors.LinearSegmentedColormap('NCL_PERC_11LEV_COLTBL',colorDict)
     return my_coltbl
 
 def ncl_grnd_hflux():
@@ -494,7 +473,7 @@ def ncl_grnd_hflux():
         green.append([xNorm,g[i],g[i]])
         blue.append([xNorm,b[i],b[i]])
     colorDict = {"red":red, "green":green, "blue":blue}
-    my_coltbl = LinearSegmentedColormap('NCL_GRND_HFLUX_COLTBL',colorDict)
+    my_coltbl = colors.LinearSegmentedColormap('NCL_GRND_HFLUX_COLTBL',colorDict)
     return my_coltbl
 
 
@@ -554,7 +533,7 @@ def gempak_colortbl():
        green.append([xNorm,g[i],g[i]])
        blue.append([xNorm,b[i],b[i]])
    colorDict = {"red":red, "green":green, "blue":blue}
-   gempak_coltbl = LinearSegmentedColormap('GEMPAK_COLTBL',colorDict)
+   gempak_coltbl = colors.LinearSegmentedColormap('GEMPAK_COLTBL',colorDict)
    return gempak_coltbl
 
 def gem_color_list():
@@ -663,7 +642,7 @@ def reflect():
 				(0.867, 0.80, 0.80),
 				(0.933, 1.00, 1.00),
 				(1.000, 1.00, 1.00))}
-	reflect_coltbl = LinearSegmentedColormap('REFLECT_COLTBL',reflect_cdict)
+	reflect_coltbl = colors.LinearSegmentedColormap('REFLECT_COLTBL',reflect_cdict)
         return reflect_coltbl
 
 def create_ncep_radar_ref_color_table():
@@ -702,13 +681,15 @@ def clear_plotables(ax,keep_ax_lst,fig):
         # if the artist isn't part of the initial set up, remove it
         a.remove()
   # check for presence of old colorbar(s) and delete them. They are stored as a separate axis
-  q=len(fig.axes)
-  if q > 1:
-    for a in np.arange(1,q):
+  x=0
+  for a in fig.axes:
+    x=x+1
+    if x > 1:
       try:
-        fig.delaxes(fig.axes[a])
-      except:
-        print 'ncepy.clear_plotables : Unable to delete figure axis at ',a,' with axis size of ',q
+        fig.delaxes(a)
+      except Exception,e: 
+        print "--- ncepy.clear_plotables: Exception: %s ---- Unable to delete figure axis at %d with axis size of %d " % (e,x,len(fig.axes))   
+
   ############################################################################   
 
 
