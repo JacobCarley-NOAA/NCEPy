@@ -895,6 +895,31 @@ def pint2pmid_3d(pint):
  for l in np.arange(1,LP1): #Start at 1 so l-1 is not < 0
    pmid[:,:,l-1]=(pint[:,:,l-1]+pint[:,:,l])*0.5 # representative of what model does 
  return pmid 
+
+def cal_zmid(fis,tmpk,spfh,pint):   
+  """Calculate height given T, Q, PINT, and terrain height.
+     Return height at midlayers."""
+  rd=287.04  # gas constant dry air
+  g=9.81
+  d608=0.608
+  IM,JM,LP1=np.shape(pint)
+  zint=np.zeros((IM,JM,LP1))
+  zmid=np.zeros((IM,JM,LP1-1))
+  LM=LP1-1
+  fi=fis
+  zint[:,:,0]=fis/g
+  pmid=pint2pmid_3d(pint)
+  lpint=np.log(pint)
+  #start from the surface and work upward
+  # we assume the surface is at level 0
+  for L in np.arange(1,LM+1): 
+      zint[:,:,L]=(tmpk[:,:,L-1]*(spfh[:,:,L-1]*d608+1.0)*rd*(lpint[:,:,L-1]-lpint[:,:,L])+fi)/g
+      fi=zint[:,:,L]*g
+  #Now start at the top and work downward
+  for L in np.arange(LP1-1,0,-1):  
+      fact=(np.log(pmid[:,:,L-1])-lpint[:,:,L-1])/(lpint[:,:,L]-lpint[:,:,L-1])
+      zmid[:,:,L-1]=zint[:,:,L-1]+(zint[:,:,L]-zint[:,:,L-1])*fact
+  return zmid
  
 
 def extrema(mat,mode='wrap',window=10):
