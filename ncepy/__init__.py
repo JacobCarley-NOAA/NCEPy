@@ -998,10 +998,10 @@ def corners_res(dom,proj='lcc'):
 
 def _stere_corners_res(dom):
     if dom=='AK':
-      llcrnrlon=-175.0
-      llcrnrlat=42.5
-      urcrnrlon=-115.0
-      urcrnrlat=75.0
+      llcrnrlon=-165.0
+      llcrnrlat=50.0
+      urcrnrlon=-121.0
+      urcrnrlat=70.0
       res='l'
     elif dom=='NAK':
       llcrnrlon=-168.75
@@ -1024,8 +1024,8 @@ def _stere_corners_res(dom):
     elif dom=='SEAK':
       llcrnrlon=-146.0
       llcrnrlat=52.0
-      urcrnrlon=-127.5
-      urcrnrlat=61.5
+      urcrnrlon=-125.5
+      urcrnrlat=59.5
       res='i'
     else:
       #Default to Alaska if we cannot find a match
