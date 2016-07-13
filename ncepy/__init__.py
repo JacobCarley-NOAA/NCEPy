@@ -64,35 +64,27 @@ def get_rotll_rotation_angles(instnlat,instnlon,TLM0D,TPH0D):
   # u_grid - u component grid relative winds from rotated lat-lon grid
   # v_grid - v component grid relative winds from rotated lat-lon grid
   #
-  # Returns COSALP,SINALP
+  # Returns CROT,SROT
   ###################################################################
-
-  # Enforce -180 to 180 convention first (negative west)
-  instnlon=np.where(instnlon<180.,instnlon-360,instnlon)
-  instnlon=np.where(instnlon<-180.,instnlon+360,instnlon)
-
-  ############################################################################
-  #############        THIS IS VITAL                            ##############
-  #############  ROUTINE ASSUMES LONGITUDES ARE POSITIVE MOVING ##############
-  ############## WESTWARD FROM THE PRIME MERIDIAN               ##############
-  ############## SO -70.0 DEG NEEDS TO BE CONVERTED TO 70.0     ##############
-
-  instnlon=instnlon*-1.
 
   #########################################
   DTR=np.pi/180.
   stnlat=instnlat*DTR
   stnlon=instnlon*DTR
-  SINPH0=np.sin(TPH0D*DTR)
-  COSPH0=np.cos(TPH0D*DTR)
-  DLM    = stnlon+TLM0D*DTR
-  XX     = COSPH0*np.cos(stnlat)*np.cos(DLM)+SINPH0*np.sin(stnlat)
-  YY     = -np.cos(stnlat)*np.sin(DLM)
-  TLON   = np.arctan(YY/XX)
-  ALPHA  = np.arcsin(SINPH0*np.sin(TLON)/np.cos(stnlat))
-  SINALP = np.sin(ALPHA)
-  COSALP = np.cos(ALPHA)
-  return COSALP,SINALP
+  TPH0=TPH0D*DTR
+  TLM0=TLM0D*DTR
+  CTPH0=np.cos(TPH0)
+  STPH0=np.sin(TPH0)
+  RELM=stnlon-TLM0
+  SRLM=np.sin(RELM)
+  CRLM=np.cos(RELM)
+  SPH=np.sin(stnlat)
+  CPH=np.cos(stnlat)
+  TPH=np.arcsin(CTPH0*SPH-STPH0*CPH*CRLM)
+  RCTPH=1.0/np.cos(TPH)
+  SROT=STPH0*SRLM*RCTPH
+  CROT=(CTPH0*CPH+STPH0*SPH*CRLM)*RCTPH
+  return CROT,SROT
 
 def rotll2earth_winds(u,v,earthlat,earthlon,TLM0D,TPH0D):
   #
