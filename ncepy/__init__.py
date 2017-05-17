@@ -22,39 +22,39 @@ def ndate(cdate,hours):
      if isinstance(hours, str):
        hours=int(hours)
      else:
-       sys.exit('NDATE: Error - input delta hour must be a string or integer.  Exit!') 
+       sys.exit('NDATE: Error - input delta hour must be a string or integer.  Exit!')
 
    indate=cdate.strip()
-   hh=indate[8:10] 
+   hh=indate[8:10]
    yyyy=indate[0:4]
    mm=indate[4:6]
-   dd=indate[6:8]  
+   dd=indate[6:8]
    #set date/time field
    parseme=(yyyy+' '+mm+' '+dd+' '+hh)
-   datetime_cdate=dateutil.parser.parse(parseme) 
+   datetime_cdate=dateutil.parser.parse(parseme)
    valid=datetime_cdate+dateutil.relativedelta.relativedelta(hours=+hours)
    vyyyy=str(valid.year)
    vm=str(valid.month).zfill(2)
    vd=str(valid.day).zfill(2)
-   vh=str(valid.hour).zfill(2)  
+   vh=str(valid.hour).zfill(2)
    return vyyyy+vm+vd+vh
 
 '''
 
-WINDS 
+WINDS
 
 '''
 
 def get_rotll_rotation_angles(instnlat,instnlon,TLM0D,TPH0D):
   #
-  # Returns the cosine and sine of the rotation anlge(s) needed to 
-  # transform rotated lat lon grid-relative winds to 
+  # Returns the cosine and sine of the rotation anlge(s) needed to
+  # transform rotated lat lon grid-relative winds to
   # earth-relative and vice-versa.
   #
   # INPUT Args:
   #
   # TLM0D - the angle of rotation of the transformed lat-lon
-  #         system in the longitudinal direction, degs 
+  #         system in the longitudinal direction, degs
   # TPH0D - the angle of rotation of the transformed lat-lon
   #         system in the latitudinal direction, degs
   # instnlat - latitude in earth coords (degs)
@@ -93,28 +93,28 @@ def rotll2earth_winds(u,v,earthlat,earthlon,TLM0D,TPH0D):
   # INPUT Args:
   #   u, v -  Grid relative u and v winds
   #   TLM0D - the angle of rotation of the transformed lat-lon
-  #         system in the longitudinal direction, degs 
+  #         system in the longitudinal direction, degs
   #   TPH0D - the angle of rotation of the transformed lat-lon
   #         system in the latitudinal direction, degs
   #   earthlat - latitude in earth coords (degs)
   #   earthlon - longitude in earth coords (degs)
-  # 
   #
-  # Returns u_earth,v_earth 
+  #
+  # Returns u_earth,v_earth
   ###################################################################
   COSALP,SINALP=get_rotll_rotation_angles(earthlat,earthlon,TLM0D,TPH0D)
   u_earth = u*COSALP+v*SINALP #This is an elementwise product: NOT a matrix multiply
   v_earth = v*COSALP-u*SINALP #This is an elementwise product: NOT a matrix multiply
   return u_earth,v_earth
 
-def earth2rotll_winds(u,v,earthlat,earthlon,TLM0D,TPH0D):      
+def earth2rotll_winds(u,v,earthlat,earthlon,TLM0D,TPH0D):
   #
   # Rotate winds from earth relative to rotated lat-lon grid
   #
   # INPUT Args:
   #   u, v -  Earth relative u and v winds
   #   TLM0D - the angle of rotation of the transformed lat-lon
-  #         system in the longitudinal direction, degs 
+  #         system in the longitudinal direction, degs
   #   TPH0D - the angle of rotation of the transformed lat-lon
   #         system in the latitudinal direction, degs
   #   earthlat - latitude in earth coords (degs)
@@ -143,30 +143,30 @@ def rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False):
   #  lov_lon  = The LOV value from grib (e.g. - -95.0) (single value in degrees)
   #              Grib doc says: "Lov = orientation of the grid; i.e. the east longitude value of
   #                              the meridian which is parallel to the Y-axis (or columns of the grid)
-  #                              along which latitude increases as the Y-coordinate increases (the 
+  #                              along which latitude increases as the Y-coordinate increases (the
   #                              orientation longitude may or may not appear on a particular grid).
-  #              
+  #
   #  earth_lons = Earth relative longitudes (can be an array, in degrees)
   #  uin, vin     = Input winds to rotate
-  #  
+  #
   # Returns:
   #  uout, vout = Output, rotated winds
   #-----------------------------------------------------------------------------------------------------
- 	  
-  # Get size and length of input u winds, if not 2d, raise an error  
+
+  # Get size and length of input u winds, if not 2d, raise an error
   q=np.shape(uin)
   ndims=len(q)
-  if ndims > 2:    
+  if ndims > 2:
     # Raise error and quit!
     raise SystemExit("Input winds for rotation have greater than 2 dimensions!")
-  if lov_lon > 0.: lov_lon=lov_lon-360.  
+  if lov_lon > 0.: lov_lon=lov_lon-360.
   dtr=np.pi/180.0             # Degrees to radians
 
   if not isinstance(inverse, bool):
     raise TypeError("**kwarg inverse must be of type bool.")
 
   # Compute rotation constant which is also
-  # known as the Lambert cone constant.  In the case 
+  # known as the Lambert cone constant.  In the case
   # of a polar stereographic projection, this is one.
   # See the following pdf for excellent documentation
   # http://www.dtcenter.org/met/users/docs/write_ups/velocity.pdf
@@ -177,7 +177,7 @@ def rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False):
   else:
     raise SystemExit("Unsupported map projection: "+proj.lower()+" for wind rotation.")
 
-  angles = rotcon_p*(earth_lons-lov_lon)*dtr 
+  angles = rotcon_p*(earth_lons-lov_lon)*dtr
   sinx2 = np.sin(angles)
   cosx2 = np.cos(angles)
 
@@ -196,31 +196,31 @@ def rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False):
 
 def sd2uv(spd,dir):
     # - Converts speed and direction to u and v
-    rad = np.pi/180.0 
-    u = -spd*np.sin(rad*dir) 
+    rad = np.pi/180.0
+    u = -spd*np.sin(rad*dir)
     v = -spd*np.cos(rad*dir)
     return u,v
-    
+
 def uv2sd(u,v):
     # - Converts u and v to speed and direction
     rad2deg = 180.0/np.pi
     spd=np.sqrt(u*u+v*v)
     dir=90.0-(rad2deg*np.arctan2(-1.0*v,-1.0*u))
-    
+
     # Make fixing of negative directions np array compatible
     a=np.where(dir<0.0)
     dir[a]=dir[a]+360.0
-     
-    return spd,dir    
-    
+
+    return spd,dir
+
 
 def kts2ms(spd):
     #Convert wind in knots to meters/second
     return spd*0.514444
-    
+
 def ms2kts(spd):
     #Convert wind in meters/second to knots
-    return spd*1.94384449    
+    return spd*1.94384449
 
 
 '''
@@ -280,7 +280,7 @@ def get_artcc_name(city):
 
 
 def top25airways():
-# Returns a list of the top25 aviation routes over the CONUS provided by AWC. 
+# Returns a list of the top25 aviation routes over the CONUS provided by AWC.
 #  Generally used in conjunction with an airways shapefile.
   return  ['J36','J95','J64','J60','J80','J6','J48','J75','J121',
            'J174','J79','J53','J109','J211','J518','J220','J134',
@@ -292,7 +292,7 @@ COLOR SHADING / COLOR BARS
 '''
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
-# Grabbed from stackoverflow post: 
+# Grabbed from stackoverflow post:
 #   http://stackoverflow.com/questions/18926031/how-to-extract-a-subset-of-a-colormap-as-a-new-colormap-in-matplotlib
     new_cmap = colors.LinearSegmentedColormap.from_list(
         'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
@@ -382,7 +382,7 @@ def tcamt():
           blue.append([xNorm,b[i],b[i]])
       colorDict = {"red":red, "green":green, "blue":blue}
       tcamt = colors.LinearSegmentedColormap('TCAMT',colorDict)
-      return tcamt 
+      return tcamt
 
 def ncl_t2m():
     # Grabbed this colormap from NCL
@@ -506,7 +506,7 @@ def gempak_colortbl():
    PURPLE	   PUR    145	  44	238  purple2
    PLUM 	   PLU    139	   0	139  magenta4
    VANILLA	   VAN    255	 228	220  bisque1
-   WHITE	   WHI    255	 255	255  white  
+   WHITE	   WHI    255	 255	255  white
    '''
 
    r=np.array([255,0,255,0,0,255,0,255,139,255,255,255,255,238,139,205,238,255,205,255,238,127,0,0,16,30,0,0,137,145,139,255,255])
@@ -565,14 +565,14 @@ def gem_color_list():
    PURPLE	   PUR    145	  44	238  purple2
    PLUM 	   PLU    139	   0	139  magenta4
    VANILLA	   VAN    255	 228	220  bisque1
-   WHITE	   WHI    255	 255	255  white  
+   WHITE	   WHI    255	 255	255  white
    '''
 
    r=np.array([255,0,255,0,0,255,0,255,139,255,255,255,255,238,139,205,238,255,205,255,238,127,0,0,16,30,0,0,137,145,139,255,255])
    g=np.array([255,0,0,255,0,255,255,0,71,130,165,174,106,44,0,0,64,127,133,215,238,255,205,139,78,144,178,238,104,44,0,228,255])
    b=np.array([255,0,0,0,255,0,255,255,38,71,79,185,106,44,0,0,0,0,0,0,0,0,0,0,139,255,238,238,205,238,139,220,255])
 
-   
+
    xsize=np.arange(np.size(r))
    r = r/255.
    g = g/255.
@@ -580,12 +580,12 @@ def gem_color_list():
    rgb = []
    for i in range(len(xsize)):
        rgb.append([r[i],g[i],b[i]])
-   return rgb 
+   return rgb
 
 
 def reflect():
       # Another Radar colormap which was found online
-         # source: http://www.atmos.washington.edu/~lmadaus/pyscript/coltbls.txt	
+         # source: http://www.atmos.washington.edu/~lmadaus/pyscript/coltbls.txt
 	reflect_cdict ={'red':	((0.000, 0.40, 0.40),
 				(0.067, 0.20, 0.20),
 				(0.133, 0.00, 0.00),
@@ -664,7 +664,7 @@ def tagrstprod(fname):
 
 def clear_plotables(ax,keep_ax_lst,fig):
   ######### - step to clear off old plottables but leave the map info - #####
-  if len(keep_ax_lst) == 0 : 
+  if len(keep_ax_lst) == 0 :
     print "ncepy.clear_plotables WARNING keep_ax_lst has length 0. Clearing ALL plottables including map info!"
   cur_ax_children = ax.get_children()[:]
   if len(cur_ax_children) > 0:
@@ -679,15 +679,15 @@ def clear_plotables(ax,keep_ax_lst,fig):
     if x > 1:
       try:
         fig.delaxes(a)
-      except Exception,e: 
-        print "--- ncepy.clear_plotables: Exception: %s ---- Unable to delete figure axis at %d with axis size of %d " % (e,x,len(fig.axes))   
+      except Exception,e:
+        print "--- ncepy.clear_plotables: Exception: %s ---- Unable to delete figure axis at %d with axis size of %d " % (e,x,len(fig.axes))
 
-  ############################################################################   
+  ############################################################################
 
 
 def gc_dist(lat1,lon1,lat2,lon2):
 # Return the great circle distance (m) between a two pairs of lat/lon points
-  EARTH_CIRCUMFERENCE = 6378137 # earth circumference in meters 
+  EARTH_CIRCUMFERENCE = 6378137 # earth circumference in meters
   dLat = np.radians(lat2 - lat1)
   dLon = np.radians(lon2 - lon1)
   a = (np.sin(dLat / 2) * np.sin(dLat / 2) +
@@ -715,8 +715,8 @@ def find_nearest_ij(lats,lat0,lons,lon0):
 def cal_td_from_ptRH(p,t,rh):
     # Find Td in Kelvin using Bolton's approx.
     #
-    # Bolton, David, 1980: The Computation of 
-    #   Equivalent Potential Temperature. 
+    # Bolton, David, 1980: The Computation of
+    #   Equivalent Potential Temperature.
     #   Mon. Wea. Rev., 108, 1046-1053.
 
     # q ----> specific humiditity in kg/kg
@@ -734,10 +734,10 @@ def cal_td_from_ptRH(p,t,rh):
     emin=np.zeros(rh.shape)
     emin=0.001                 # e---> vapor pressure in hPa
 
-    # ---- calc. the vapor pressure ----> needs to be in hPa 
-    e = ((es(t)*rh)/100.)/100. 
+    # ---- calc. the vapor pressure ----> needs to be in hPa
+    e = ((es(t)*rh)/100.)/100.
 
-    # ---- make sure the vapor pressure values aren't too small                          
+    # ---- make sure the vapor pressure values aren't too small
     e = np.maximum(e, emin)
 
     # get the dewpoint in Kelvin ----- np.log is the ln
@@ -751,14 +751,14 @@ def cal_td_from_ptRH(p,t,rh):
 def cal_td(p, q):
     # Find Td in Kelvin using Bolton's approx.
     #
-    # Bolton, David, 1980: The Computation of 
-    #   Equivalent Potential Temperature. 
+    # Bolton, David, 1980: The Computation of
+    #   Equivalent Potential Temperature.
     #   Mon. Wea. Rev., 108, 1046-1053.
-    
+
     # q ----> specific humiditity in kg/kg
     # p ----> pressure in Pa
     # dew --> returns dew, the dewpoint temperature
-    
+
     # --- convert specific humidity to mixing ratio
 
     T_zero = 273.15
@@ -766,21 +766,21 @@ def cal_td(p, q):
     Rd = 287.04  # gas constant dry air
     Rv = 461.51  # gas constant vapor
     eps = Rd/Rv
-    
+
     w=q/(1.0-q)
-    
+
     emin=np.zeros(q.shape)
     emin=0.001                 # e---> vapor pressure in hPa
-    
+
     # ---- calc. the vapor pressure ----> must convert pressure to hPa in here
     e = w * (p/100.) / (eps + w)
-    
-    # ---- make sure the vapor pressure values aren't too small				 
-    e = np.maximum(e, emin)						 
-    
+
+    # ---- make sure the vapor pressure values aren't too small
+    e = np.maximum(e, emin)
+
     # get the dewpoint in Kelvin ----- np.log is the ln
     dew = 273.15 + (243.5 / ((17.67 / np.log(e/6.112)) - 1.0) )
-    
+
     return dew
 
 def Kelvin2F(T):
@@ -804,29 +804,29 @@ def SMOOTH(FIELD,SMTH=0.5):
    Smoothing Function pulled from NCEP UPP code SMOOTH.f
 
    SUBPROGRAM:    SMOOTH      SMOOTH A METEOROLOGICAL FIELD
-      PRGMMR: STAN BENJAMIN    ORG: FSL/PROFS  DATE: 90-06-15 
-    
-    ABSTRACT: SHAPIRO SMOOTHER. 
-    
-    PROGRAM HISTORY LOG: 
+      PRGMMR: STAN BENJAMIN    ORG: FSL/PROFS  DATE: 90-06-15
+
+    ABSTRACT: SHAPIRO SMOOTHER.
+
+    PROGRAM HISTORY LOG:
       85-12-09  S. BENJAMIN   ORIGINAL VERSION
     2013        J. CARLEY     Python port
-    
-    USAGE:    CALL SMOOTH (FIELD,HOLD,IX,IY,SMTH) 
-      INPUT ARGUMENT LIST: 
+
+    USAGE:    CALL SMOOTH (FIELD,HOLD,IX,IY,SMTH)
+      INPUT ARGUMENT LIST:
         FIELD    - REAL ARRAY  FIELD(IX,IY)
                                METEOROLOGICAL FIELD
-  
+
       OPTIONAL INPUT:
-        SMTH     - REAL (defaults to 0.5)      
-  
-     OUTPUT ARGUMENT LIST:   
+        SMTH     - REAL (defaults to 0.5)
+
+     OUTPUT ARGUMENT LIST:
        FIELD    - REAL ARRAY  FIELD(IX,IY)
                               SMOOTHED METEOROLOGICAL FIELD
-   
+
    REMARKS: REFERENCE: SHAPIRO, 1970: "SMOOTHING, FILTERING, AND
      BOUNDARY EFFECTS", REV. GEOPHYS. SP. PHYS., 359-387.
-     THIS FILTER IS OF THE TYPE 
+     THIS FILTER IS OF THE TYPE
            Z(I) = (1-S)Z(I) + S(Z(I+1)+Z(I-1))/2
      FOR A FILTER WHICH IS SUPPOSED TO DAMP 2DX WAVES COMPLETELY
      BUT LEAVE 4DX AND LONGER WITH LITTLE DAMPING,
@@ -834,7 +834,7 @@ def SMOOTH(FIELD,SMTH=0.5):
      AND -0.5.
 
    Directions on calling the routine.  Call from inside a loop where the
-     iterator is the number of smoothing passes.  Smoothing passes can 
+     iterator is the number of smoothing passes.  Smoothing passes can
      set as a function of grid-spacing (how it's handled for the RAP/HRRR)
        Example:
 
@@ -842,9 +842,9 @@ def SMOOTH(FIELD,SMTH=0.5):
       SMOOTH=int(5.*(13500./dxm)) # for u, v, and heights
       for N in np.arange(NSMOOTH):
         SMOOTH(FIELD,SMTH)
-   
+
   '''
-    
+
   IX,IY=np.shape(FIELD)
 
   HOLD=np.zeros([IX,2])
@@ -878,17 +878,17 @@ def SMOOTH(FIELD,SMTH=0.5):
 
 def pint2pmid_3d(pint):
  #convert pressure at interface layers to mid-layers
- #  
+ #
  # routine assumes input is a 3d array
- 
+
  IM,JM,LP1=np.shape(pint)
  pmid=np.zeros((IM,JM,LP1-1))
- 
- for l in np.arange(1,LP1): #Start at 1 so l-1 is not < 0
-   pmid[:,:,l-1]=(pint[:,:,l-1]+pint[:,:,l])*0.5 # representative of what model does 
- return pmid 
 
-def cal_zmid(fis,tmpk,spfh,pint):   
+ for l in np.arange(1,LP1): #Start at 1 so l-1 is not < 0
+   pmid[:,:,l-1]=(pint[:,:,l-1]+pint[:,:,l])*0.5 # representative of what model does
+ return pmid
+
+def cal_zmid(fis,tmpk,spfh,pint):
   """Calculate height given T, Q, PINT, and terrain height.
      Return height at midlayers."""
   rd=287.04  # gas constant dry air
@@ -904,19 +904,19 @@ def cal_zmid(fis,tmpk,spfh,pint):
   lpint=np.log(pint)
   #start from the surface and work upward
   # we assume the surface is at level 0
-  for L in np.arange(1,LM+1): 
+  for L in np.arange(1,LM+1):
       zint[:,:,L]=(tmpk[:,:,L-1]*(spfh[:,:,L-1]*d608+1.0)*rd*(lpint[:,:,L-1]-lpint[:,:,L])+fi)/g
       fi=zint[:,:,L]*g
   #Now start at the top and work downward
-  for L in np.arange(LP1-1,0,-1):  
+  for L in np.arange(LP1-1,0,-1):
       fact=(np.log(pmid[:,:,L-1])-lpint[:,:,L-1])/(lpint[:,:,L]-lpint[:,:,L-1])
       zmid[:,:,L-1]=zint[:,:,L-1]+(zint[:,:,L]-zint[:,:,L-1])*fact
   return zmid
- 
+
 
 def extrema(mat,mode='wrap',window=10):
   # From: http://matplotlib.org/basemap/users/examples.html
-   
+
   """find the indices of local extrema (min and max)
   in the input array."""
   mn = minimum_filter(mat, size=window, mode=mode)
@@ -925,11 +925,11 @@ def extrema(mat,mode='wrap',window=10):
   # (mat == mn) true if pixel is equal to the local in
   # Return the indices of the maxima, minima
   return np.nonzero(mat == mn), np.nonzero(mat == mx)
-    
-    
-def plt_highs_and_lows(m,mat,lons,lats,mode='wrap',window='10'):    
+
+
+def plt_highs_and_lows(m,mat,lons,lats,mode='wrap',window='10'):
   # From: http://matplotlib.org/basemap/users/examples.html
-  # m is the map handle  
+  # m is the map handle
   x, y = m(lons, lats)
   local_min, local_max = extrema(mat,mode,window)
   xlows = x[local_min]; xhighs = x[local_max]
@@ -962,7 +962,7 @@ def plt_highs_and_lows(m,mat,lons,lats,mode='wrap',window='10'):
                     ha='center',va='top',color='b',zorder=10,
                     bbox = dict(boxstyle="square",ec='None',fc=(1,1,1,0.5)))
             xyplotted.append((x,y))
-    
+
 def corners_res(dom,proj='lcc'):
 #Sets domain corners and
 # plotting resolutions
@@ -976,7 +976,7 @@ def corners_res(dom,proj='lcc'):
 #                  if invoked).
 #                  Resolution drops off by roughly 80% between datasets.
 #                  Higher res datasets are much slower to draw.
-#                  Default ``c``.   
+#                  Default ``c``.
 
 
   if proj.lower() in ['lcc','laea','merc']:
@@ -1083,11 +1083,11 @@ def _default_corners_res(dom):
       urcrnrlon=-71.5
       urcrnrlat=40.25
       res='i'
-    elif dom=='Great_Lakes':    	    
+    elif dom=='Great_Lakes':
       llcrnrlon=-96.0
       llcrnrlat=37.0
       urcrnrlon=-71.0
-      urcrnrlat=47.0
+      urcrnrlat=47.5
       res='l'
     elif dom=='AK':
       llcrnrlon=-180.0
@@ -1179,6 +1179,6 @@ def _default_corners_res(dom):
       llcrnrlat=22.0
       urcrnrlon=-64.5
       urcrnrlat=48.0
-      res='l'    
+      res='l'
     return llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat,res
-    
+
