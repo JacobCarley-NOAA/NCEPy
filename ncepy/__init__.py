@@ -782,7 +782,7 @@ def gc_dist(lat1,lon1,lat2,lon2):
 
 def find_nearest_ij(lats,lat0,lons,lon0):
 # Returns the nearest gridpoint based upon an input/specified lat/lon point (lat0 and lon0)
-  gc=ncepy.gc_dist(lats,lons,lat0,lon0)
+  gc=gc_dist(lats,lons,lat0,lon0)
   idx_j,idx_i=np.unravel_index(gc.argmin(), gc.shape)
   return idx_j,idx_i
 
