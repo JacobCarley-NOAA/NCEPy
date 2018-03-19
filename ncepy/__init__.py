@@ -1019,10 +1019,10 @@ def plt_highs_and_lows(m,mat,lons,lats,mode='wrap',window='10'):
         dist = [np.sqrt((x-x0)**2+(y-y0)**2) for x0,y0 in xyplotted]
         if not dist or min(dist) > dmin:
             plt.text(x,y,'L',fontsize=14,fontweight='bold',
-                    ha='center',va='center',color='r',zorder=10)
+                    ha='center',va='center',color='r',zorder=10,clip_on=True)
             plt.text(x,y-yoffset,repr(int(p)),fontsize=9,zorder=10,
                     ha='center',va='top',color='r',
-                    bbox = dict(boxstyle="square",ec='None',fc=(1,1,1,0.5)))
+                    bbox = dict(boxstyle="square",ec='None',fc=(1,1,1,0.5)),clip_on=True)
             xyplotted.append((x,y))
   # plot highs as blue H's, with max pressure value underneath.
   xyplotted = []
@@ -1031,10 +1031,10 @@ def plt_highs_and_lows(m,mat,lons,lats,mode='wrap',window='10'):
         dist = [np.sqrt((x-x0)**2+(y-y0)**2) for x0,y0 in xyplotted]
         if not dist or min(dist) > dmin:
             plt.text(x,y,'H',fontsize=14,fontweight='bold',
-                    ha='center',va='center',color='b',zorder=10)
+                    ha='center',va='center',color='b',zorder=10,clip_on=True)
             plt.text(x,y-yoffset,repr(int(p)),fontsize=9,
                     ha='center',va='top',color='b',zorder=10,
-                    bbox = dict(boxstyle="square",ec='None',fc=(1,1,1,0.5)))
+                    bbox = dict(boxstyle="square",ec='None',fc=(1,1,1,0.5)),clip_on=True)
             xyplotted.append((x,y))
 
 def corners_res(dom,proj='lcc'):
