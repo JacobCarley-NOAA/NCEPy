@@ -466,6 +466,29 @@ def tcamt():
       tcamt = colors.LinearSegmentedColormap('TCAMT',colorDict)
       return tcamt
 
+def cmap_q2m():
+    r=np.array([255,204,179,153,96,128,0, 0,  51, 0,  0,  0,  133,51, 70, 0,  128,128,180])
+    g=np.array([255,204,179,153,96,128,92,128,153,155,155,255,162,102,70, 0,  0,  0,  0])
+    b=np.array([255,204,179,153,96,0,  0, 0,  102,155,255,255,255,255,255,128,255,128,128])
+    xsize=np.arange(np.size(r))
+    r = r/255.
+    g = g/255.
+    b = b/255.
+    red = []
+    green = []
+    blue = []
+    for i in range(len(xsize)):
+        xNorm=np.float(i)/(np.float(np.size(r))-1.0)
+        red.append([xNorm,r[i],r[i]])
+        green.append([xNorm,g[i],g[i]])
+        blue.append([xNorm,b[i],b[i]])
+    colorDict = {"red":red, "green":green, "blue":blue}
+    cmap_q2m_coltbl = colors.LinearSegmentedColormap('CMAP_Q2M_COLTBL',colorDict)
+    cmap_q2m_coltbl.set_over(color='deeppink')
+    return cmap_q2m_coltbl
+
+
+
 def ncl_t2m():
     # Grabbed this colormap from NCL
     # Converted from MeteoSwiss NCL library
