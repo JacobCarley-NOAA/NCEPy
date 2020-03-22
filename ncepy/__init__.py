@@ -1,3 +1,5 @@
+#!/bin/usr/env python
+
 import numpy as np
 import sys
 from scipy.ndimage.filters import minimum_filter, maximum_filter
@@ -273,7 +275,7 @@ def get_artcc_name(city):
   elif city.upper()=='ANCHORAGE':
     name='ZAN'
   else:
-    print 'Unable to locate ARTCC abbrev. name for ',city,' - using input value'
+    print('Unable to locate ARTCC abbrev. name for ',city,' - using input value')
     name=city.upper()
 
   return name
@@ -438,7 +440,7 @@ def ncl_radarmap():
       green = []
       for i in range(len(xsize)):
           xNorm=np.float(i)/(np.float(np.size(r))-1.0)
-	  red.append([xNorm,r[i],r[i]])
+          red.append([xNorm,r[i],r[i]])
           green.append([xNorm,g[i],g[i]])
           blue.append([xNorm,b[i],b[i]])
       colorDict = {"red":red, "green":green, "blue":blue}
@@ -579,39 +581,39 @@ def gempak_colortbl():
    '''
    Color table from gempak
 
-   WHITE	   WHI    255	 255	255  white
-   BLACK	   BLA      0	   0	  0  black
-   RED  	   RED    255	   0	  0  red
-   GREEN	   GRE      0	 255	  0  green
-   BLUE 	   BLU      0	   0	255  blue
-   YELLOW	   YEL    255	 255	  0  yellow
-   CYAN 	   CYA      0	 255	255  cyan
-   MAGENTA	   MAG    255	   0	255  magenta
-   BROWN	   BRO    139	  71	 38  sienna3
-   CORAL	   COR    255	 130	 71  sienna1
-   APRICOT	   APR    255	 165	 79  tan1
-   PINK 	   PIN    255	 174	185  LightPink1
-   DKPINK	   DKP    255	 106	106  IndianRed1
-   MDVIOLET	   MDV    238	  44	 44  firebrick2
-   MAROON	   MAR    139	   0	  0  red4
-   FIREBRIC	   FIR    205	   0	  0  red3
-   ORRED	   ORR    238	  64	  0  OrangeRed2
-   ORANGE	   ORA    255	 127	  0  DarkOrange1
-   DKORANGE	   DKO    205	 133	  0  orange3
-   GOLD 	   GOL    255	 215	  0  gold1
-   DKYELLOW	   DKY    238	 238	  0  yellow2
-   LWNGREEN	   LWN    127	 255	  0  chartreuse1
-   MDGREEN	   MDG      0	 205	  0  green3
-   DKGREEN	   DKG      0	 139	  0  green4
-   GRPBLUE	   GRP     16	  78	139  DodgerBlue4
-   LTBLUE	   LTB     30	 144	255  DodgerBlue1
-   SKY  	   SKY      0	 178	238  DeepSkyBlue2
-   MDCYAN	   MDC      0	 238	238  cyan2
-   VIOLET	   VIO    137	 104	205  MediumPurple3
-   PURPLE	   PUR    145	  44	238  purple2
-   PLUM 	   PLU    139	   0	139  magenta4
-   VANILLA	   VAN    255	 228	220  bisque1
-   WHITE	   WHI    255	 255	255  white
+   WHITE       WHI    255     255    255  white
+   BLACK       BLA      0       0      0  black
+   RED         RED    255       0      0  red
+   GREEN       GRE      0     255      0  green
+   BLUE        BLU      0       0    255  blue
+   YELLOW       YEL    255     255      0  yellow
+   CYAN        CYA      0     255    255  cyan
+   MAGENTA       MAG    255       0    255  magenta
+   BROWN       BRO    139      71     38  sienna3
+   CORAL       COR    255     130     71  sienna1
+   APRICOT       APR    255     165     79  tan1
+   PINK        PIN    255     174    185  LightPink1
+   DKPINK       DKP    255     106    106  IndianRed1
+   MDVIOLET       MDV    238      44     44  firebrick2
+   MAROON       MAR    139       0      0  red4
+   FIREBRIC       FIR    205       0      0  red3
+   ORRED       ORR    238      64      0  OrangeRed2
+   ORANGE       ORA    255     127      0  DarkOrange1
+   DKORANGE       DKO    205     133      0  orange3
+   GOLD        GOL    255     215      0  gold1
+   DKYELLOW       DKY    238     238      0  yellow2
+   LWNGREEN       LWN    127     255      0  chartreuse1
+   MDGREEN       MDG      0     205      0  green3
+   DKGREEN       DKG      0     139      0  green4
+   GRPBLUE       GRP     16      78    139  DodgerBlue4
+   LTBLUE       LTB     30     144    255  DodgerBlue1
+   SKY         SKY      0     178    238  DeepSkyBlue2
+   MDCYAN       MDC      0     238    238  cyan2
+   VIOLET       VIO    137     104    205  MediumPurple3
+   PURPLE       PUR    145      44    238  purple2
+   PLUM        PLU    139       0    139  magenta4
+   VANILLA       VAN    255     228    220  bisque1
+   WHITE       WHI    255     255    255  white
    '''
 
    r=np.array([255,0,255,0,0,255,0,255,139,255,255,255,255,238,139,205,238,255,205,255,238,127,0,0,16,30,0,0,137,145,139,255,255])
@@ -638,39 +640,39 @@ def gem_color_list():
    '''
    Color table from gempak
 
-   WHITE	   WHI    255	 255	255  white
-   BLACK	   BLA      0	   0	  0  black
-   RED  	   RED    255	   0	  0  red
-   GREEN	   GRE      0	 255	  0  green
-   BLUE 	   BLU      0	   0	255  blue
-   YELLOW	   YEL    255	 255	  0  yellow
-   CYAN 	   CYA      0	 255	255  cyan
-   MAGENTA	   MAG    255	   0	255  magenta
-   BROWN	   BRO    139	  71	 38  sienna3
-   CORAL	   COR    255	 130	 71  sienna1
-   APRICOT	   APR    255	 165	 79  tan1
-   PINK 	   PIN    255	 174	185  LightPink1
-   DKPINK	   DKP    255	 106	106  IndianRed1
-   MDVIOLET	   MDV    238	  44	 44  firebrick2
-   MAROON	   MAR    139	   0	  0  red4
-   FIREBRIC	   FIR    205	   0	  0  red3
-   ORRED	   ORR    238	  64	  0  OrangeRed2
-   ORANGE	   ORA    255	 127	  0  DarkOrange1
-   DKORANGE	   DKO    205	 133	  0  orange3
-   GOLD 	   GOL    255	 215	  0  gold1
-   DKYELLOW	   DKY    238	 238	  0  yellow2
-   LWNGREEN	   LWN    127	 255	  0  chartreuse1
-   MDGREEN	   MDG      0	 205	  0  green3
-   DKGREEN	   DKG      0	 139	  0  green4
-   GRPBLUE	   GRP     16	  78	139  DodgerBlue4
-   LTBLUE	   LTB     30	 144	255  DodgerBlue1
-   SKY  	   SKY      0	 178	238  DeepSkyBlue2
-   MDCYAN	   MDC      0	 238	238  cyan2
-   VIOLET	   VIO    137	 104	205  MediumPurple3
-   PURPLE	   PUR    145	  44	238  purple2
-   PLUM 	   PLU    139	   0	139  magenta4
-   VANILLA	   VAN    255	 228	220  bisque1
-   WHITE	   WHI    255	 255	255  white
+   WHITE       WHI    255     255    255  white
+   BLACK       BLA      0       0      0  black
+   RED         RED    255       0      0  red
+   GREEN       GRE      0     255      0  green
+   BLUE        BLU      0       0    255  blue
+   YELLOW       YEL    255     255      0  yellow
+   CYAN        CYA      0     255    255  cyan
+   MAGENTA       MAG    255       0    255  magenta
+   BROWN       BRO    139      71     38  sienna3
+   CORAL       COR    255     130     71  sienna1
+   APRICOT       APR    255     165     79  tan1
+   PINK        PIN    255     174    185  LightPink1
+   DKPINK       DKP    255     106    106  IndianRed1
+   MDVIOLET       MDV    238      44     44  firebrick2
+   MAROON       MAR    139       0      0  red4
+   FIREBRIC       FIR    205       0      0  red3
+   ORRED       ORR    238      64      0  OrangeRed2
+   ORANGE       ORA    255     127      0  DarkOrange1
+   DKORANGE       DKO    205     133      0  orange3
+   GOLD        GOL    255     215      0  gold1
+   DKYELLOW       DKY    238     238      0  yellow2
+   LWNGREEN       LWN    127     255      0  chartreuse1
+   MDGREEN       MDG      0     205      0  green3
+   DKGREEN       DKG      0     139      0  green4
+   GRPBLUE       GRP     16      78    139  DodgerBlue4
+   LTBLUE       LTB     30     144    255  DodgerBlue1
+   SKY         SKY      0     178    238  DeepSkyBlue2
+   MDCYAN       MDC      0     238    238  cyan2
+   VIOLET       VIO    137     104    205  MediumPurple3
+   PURPLE       PUR    145      44    238  purple2
+   PLUM        PLU    139       0    139  magenta4
+   VANILLA       VAN    255     228    220  bisque1
+   WHITE       WHI    255     255    255  white
    '''
 
    r=np.array([255,0,255,0,0,255,0,255,139,255,255,255,255,238,139,205,238,255,205,255,238,127,0,0,16,30,0,0,137,145,139,255,255])
@@ -691,55 +693,55 @@ def gem_color_list():
 def reflect():
       # Another Radar colormap which was found online
          # source: http://www.atmos.washington.edu/~lmadaus/pyscript/coltbls.txt
-	reflect_cdict ={'red':	((0.000, 0.40, 0.40),
-				(0.067, 0.20, 0.20),
-				(0.133, 0.00, 0.00),
-				(0.200, 0.00, 0.00),
-				(0.267, 0.00, 0.00),
-				(0.333, 0.00, 0.00),
-				(0.400, 1.00, 1.00),
-				(0.467, 1.00, 1.00),
-				(0.533, 1.00, 1.00),
-				(0.600, 1.00, 1.00),
-				(0.667, 0.80, 0.80),
-				(0.733, 0.60, 0.60),
-				(0.800, 1.00, 1.00),
-				(0.867, 0.60, 0.60),
-				(0.933, 1.00, 1.00),
-				(1.000, 0.00, 0.00)),
-		'green':	((0.000, 1.00, 1.00),
-				(0.067, 0.60, 0.60),
-				(0.133, 0.00, 0.00),
-				(0.200, 1.00, 1.00),
-				(0.267, 0.80, 0.80),
-				(0.333, 0.60, 0.60),
-				(0.400, 1.00, 1.00),
-				(0.467, 0.80, 0.80),
-				(0.533, 0.40, 0.40),
-				(0.600, 0.00, 0.00),
-				(0.667, 0.20, 0.20),
-				(0.733, 0.00, 0.00),
-				(0.800, 0.00, 0.00),
-				(0.867, 0.20, 0.20),
-				(0.933, 1.00, 1.00),
-				(1.000, 1.00, 1.00)),
-		'blue':		((0.000, 1.00, 1.00),
-				(0.067, 1.00, 1.00),
-				(0.133, 1.00, 1.00),
-				(0.200, 0.00, 0.00),
-				(0.267, 0.00, 0.00),
-				(0.333, 0.00, 0.00),
-				(0.400, 0.00, 0.00),
-				(0.467, 0.00, 0.00),
-				(0.533, 0.00, 0.00),
-				(0.600, 0.00, 0.00),
-				(0.667, 0.00, 0.00),
-				(0.733, 0.00, 0.00),
-				(0.800, 1.00, 1.00),
-				(0.867, 0.80, 0.80),
-				(0.933, 1.00, 1.00),
-				(1.000, 1.00, 1.00))}
-	reflect_coltbl = colors.LinearSegmentedColormap('REFLECT_COLTBL',reflect_cdict)
+        reflect_cdict ={'red':    ((0.000, 0.40, 0.40),
+                (0.067, 0.20, 0.20),
+                (0.133, 0.00, 0.00),
+                (0.200, 0.00, 0.00),
+                (0.267, 0.00, 0.00),
+                (0.333, 0.00, 0.00),
+                (0.400, 1.00, 1.00),
+                (0.467, 1.00, 1.00),
+                (0.533, 1.00, 1.00),
+                (0.600, 1.00, 1.00),
+                (0.667, 0.80, 0.80),
+                (0.733, 0.60, 0.60),
+                (0.800, 1.00, 1.00),
+                (0.867, 0.60, 0.60),
+                (0.933, 1.00, 1.00),
+                (1.000, 0.00, 0.00)),
+        'green':    ((0.000, 1.00, 1.00),
+                (0.067, 0.60, 0.60),
+                (0.133, 0.00, 0.00),
+                (0.200, 1.00, 1.00),
+                (0.267, 0.80, 0.80),
+                (0.333, 0.60, 0.60),
+                (0.400, 1.00, 1.00),
+                (0.467, 0.80, 0.80),
+                (0.533, 0.40, 0.40),
+                (0.600, 0.00, 0.00),
+                (0.667, 0.20, 0.20),
+                (0.733, 0.00, 0.00),
+                (0.800, 0.00, 0.00),
+                (0.867, 0.20, 0.20),
+                (0.933, 1.00, 1.00),
+                (1.000, 1.00, 1.00)),
+        'blue':        ((0.000, 1.00, 1.00),
+                (0.067, 1.00, 1.00),
+                (0.133, 1.00, 1.00),
+                (0.200, 0.00, 0.00),
+                (0.267, 0.00, 0.00),
+                (0.333, 0.00, 0.00),
+                (0.400, 0.00, 0.00),
+                (0.467, 0.00, 0.00),
+                (0.533, 0.00, 0.00),
+                (0.600, 0.00, 0.00),
+                (0.667, 0.00, 0.00),
+                (0.733, 0.00, 0.00),
+                (0.800, 1.00, 1.00),
+                (0.867, 0.80, 0.80),
+                (0.933, 1.00, 1.00),
+                (1.000, 1.00, 1.00))}
+        reflect_coltbl = colors.LinearSegmentedColormap('REFLECT_COLTBL',reflect_cdict)
         return reflect_coltbl
 
 def create_ncep_radar_ref_color_table():
@@ -770,7 +772,7 @@ def tagrstprod(fname):
 def clear_plotables(ax,keep_ax_lst,fig):
   ######### - step to clear off old plottables but leave the map info - #####
   if len(keep_ax_lst) == 0 :
-    print "ncepy.clear_plotables WARNING keep_ax_lst has length 0. Clearing ALL plottables including map info!"
+    print("ncepy.clear_plotables WARNING keep_ax_lst has length 0. Clearing ALL plottables including map info!")
   cur_ax_children = ax.get_children()[:]
   if len(cur_ax_children) > 0:
     for a in cur_ax_children:
@@ -784,8 +786,8 @@ def clear_plotables(ax,keep_ax_lst,fig):
     if x > 1:
       try:
         fig.delaxes(a)
-      except Exception,e:
-        print "--- ncepy.clear_plotables: Exception: %s ---- Unable to delete figure axis at %d with axis size of %d " % (e,x,len(fig.axes))
+      except Exception as e:
+        print("--- ncepy.clear_plotables: Exception: %s ---- Unable to delete figure axis at %d with axis size of %d " % (e,x,len(fig.axes)))
 
   ############################################################################
 
