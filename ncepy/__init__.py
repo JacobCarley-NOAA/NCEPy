@@ -1026,9 +1026,11 @@ def extrema(mat,mode='wrap',window=10):
   return np.nonzero(mat == mn), np.nonzero(mat == mx)
 
 
-def plt_highs_and_lows(m,mat,lons,lats,mode='wrap',window='10'):
+def plt_highs_and_lows(m,mat,lons,lats,mode='wrap',window=10):
   # From: http://matplotlib.org/basemap/users/examples.html
   # m is the map handle
+  if isinstance(window,int) == False:
+    raise TypeError("The window argument to plt_highs_and_lows must be an integer.") 
   x, y = m(lons, lats)
   local_min, local_max = extrema(mat,mode,window)
   xlows = x[local_min]; xhighs = x[local_max]
