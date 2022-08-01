@@ -1100,7 +1100,7 @@ def _stere_corners_res(dom):
       llcrnrlon=-168.75
       llcrnrlat=62.5
       urcrnrlon=-137.0
-      urcrnrlat=75.0
+      urcrnrlat=74.5
       res='i'
     elif dom=='SAK':
       llcrnrlon=-163.0
@@ -1110,7 +1110,7 @@ def _stere_corners_res(dom):
       res='i'
     elif dom=='SWAK':
       llcrnrlon=-172.5
-      llcrnrlat=45.0
+      llcrnrlat=46.0
       urcrnrlon=-147.5
       urcrnrlat=62.5
       res='i'
@@ -1146,7 +1146,7 @@ def _default_corners_res(dom):
       llcrnrlon=-125.927124
       llcrnrlat=38.0
       urcrnrlon=-108.5
-      urcrnrlat=54.756331
+      urcrnrlat=54.25
       res='i'
     elif dom=='NC':
       llcrnrlon=-110.0
@@ -1157,7 +1157,7 @@ def _default_corners_res(dom):
     elif dom=='NE':
       llcrnrlon=-84.0
       llcrnrlat=41.0
-      urcrnrlon=-64.0
+      urcrnrlon=-65.25
       urcrnrlat=47.5
       res='i'
     elif dom=='SC':
